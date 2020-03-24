@@ -1,2 +1,2 @@
-# WeddingInvitations
- A python script to automate wedding invitations
+# AutoSMS
+ A python script to automate sending SMS to a large group of people.
