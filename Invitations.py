@@ -4,13 +4,13 @@ from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 import openpyxl
 import re
-import WeddingData             # Data file includes twilio account, location of excel, invite body and the sender's name
+import InvitationsData             # Data file includes twilio account, location of excel, invite body and the sender's name
 
 """Global Variables"""
-account_sid = WeddingData.sid
-auth_token = WeddingData.token
+account_sid = InvitationsData.sid
+auth_token = InvitationsData.token
 client = Client(account_sid, auth_token)
-loc = WeddingData.loc
+loc = InvitationsData.loc
 invites = openpyxl.load_workbook(loc)
 invites_sheet = invites['Sheet1']
 
@@ -52,8 +52,8 @@ def send_message(my_client, phone_number):
     :return: sid of message or message error
     """
     try:
-        message = my_client.messages.create(body=WeddingData.body,
-                                            from_=WeddingData.from_,
+        message = my_client.messages.create(body=InvitationsData.body,
+                                            from_=InvitationsData.from_,
                                             to=phone_number)
         return True, message
     except TwilioRestException as e:
