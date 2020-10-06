@@ -1,4 +1,3 @@
-
-WeddingData.py
-InvitationsData.py
+.gitignore
 *.pyc
+.idea/
