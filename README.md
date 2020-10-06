@@ -45,6 +45,6 @@ sid -> your ACCOUNT SID\
 token -> your ACCOUNT TOKEN\
 excel -> the path to your excel file. If you use the one provided, leave as is\
 from_ -> the name of the sender that will appear when recieving the message\
-body -> the body of the message\
+body -> the body of the message
 
 3. Run the script.
