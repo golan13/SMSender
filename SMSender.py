@@ -4,15 +4,15 @@ from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 import openpyxl
 import re
-import InvitationsData             # Data file includes twilio account, location of excel, invite body and the sender's name
+import SMSenderData             # Data file includes twilio account, location of excel, invite body and the sender's name
 
 """Global Variables"""
-account_sid = InvitationsData.sid
-auth_token = InvitationsData.token
+account_sid = SMSenderData.sid
+auth_token = SMSenderData.token
 client = Client(account_sid, auth_token)
-loc = InvitationsData.loc
-invites = openpyxl.load_workbook(loc)
-invites_sheet = invites['Sheet1']
+excel = SMSenderData.excel
+workbook = openpyxl.load_workbook(excel)
+sheet = workbook['Sheet1']
 
 
 def good_number(phone_number):
@@ -52,8 +52,8 @@ def send_message(my_client, phone_number):
     :return: sid of message or message error
     """
     try:
-        message = my_client.messages.create(body=InvitationsData.body,
-                                            from_=InvitationsData.from_,
+        message = my_client.messages.create(body=SMSenderData.body,
+                                            from_=SMSenderData.from_,
                                             to=phone_number)
         return True, message
     except TwilioRestException as e:
@@ -67,7 +67,7 @@ def get_max_row():
     counter = 0
     i = 1
     while True:
-        cell = invites_sheet.cell(row=i, column=2).value
+        cell = sheet.cell(row=i, column=2).value
         if cell is not None:
             counter += 1
             i += 1
@@ -78,16 +78,16 @@ def get_max_row():
 def main():
     max_row = get_max_row()
     for i in range(2, max_row + 1):
-        number = invites_sheet.cell(row=i, column=2).value  # Get phone number
-        sent_cell = invites_sheet.cell(row=i, column=3)
-        sid_cell = invites_sheet.cell(row=i, column=4)
-        error_cell = invites_sheet.cell(row=i, column=5)
+        number = sheet.cell(row=i, column=2).value  # Get phone number
+        sent_cell = sheet.cell(row=i, column=3)
+        sid_cell = sheet.cell(row=i, column=4)
+        error_cell = sheet.cell(row=i, column=5)
         if not good_number(number):                         # Check if number is in +972 format
             number = format_number(number)
         if number is None:                                  # If not in format, write error and skip
             sent_cell.value = 'No'
             error_cell.value = 'Phone number is wrong'
-            invites.save(loc)
+            workbook.save(excel)
             continue
         (sent, message) = send_message(client, number)      # Send message
         if sent is True:
@@ -96,7 +96,7 @@ def main():
         else:
             sent_cell.value = 'No'
             error_cell.value = message
-        invites.save(loc)
+        workbook.save(excel)
 
 
 if __name__ == '__main__':
